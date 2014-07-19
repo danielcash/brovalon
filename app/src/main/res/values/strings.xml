@@ -8,5 +8,6 @@
     <string name="createGame">Choose settings and create game.</string>
     <string name="title_activity_login">Brovalon</string>
     <string name="login">Enter Brovalon username.</string>
+    <string name="title_activity_game_lobby">Brovalon: Game Lobby</string>
 
 </resources>

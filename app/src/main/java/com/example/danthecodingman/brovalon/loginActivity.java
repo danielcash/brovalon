@@ -1,13 +1,18 @@
 package com.example.danthecodingman.brovalon;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.*;
+import android.widget.TextView.OnEditorActionListener;
 import java.util.*;
 
 import org.apache.http.NameValuePair;
@@ -23,6 +28,25 @@ public class loginActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         mEdit = (EditText)findViewById(R.id.textUser);
+
+        mEdit.setOnEditorActionListener(new OnEditorActionListener() {
+
+            @Override
+            public boolean onEditorAction(TextView v, int actionId,
+                                          KeyEvent event) {
+                if (event != null&& (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                    InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                    in.hideSoftInputFromWindow(v.getWindowToken(),
+                            InputMethodManager.HIDE_NOT_ALWAYS);
+
+                    // Must return true here to consume event
+                    return true;
+
+                }
+                return false;
+            }
+        });
     }
 
     private class handleUser extends AsyncTask {
@@ -55,9 +79,14 @@ public class loginActivity extends ActionBarActivity {
             {
                 // no user found in database already, so we need to create one
                 ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-                nameValuePairs.add(new BasicNameValuePair("id", "12345"));
+                nameValuePairs.add(new BasicNameValuePair("name", username));
 
                 JSONObject newUser = brotilities.postWebRequest("http://danthecodingman.com:3000/users/", nameValuePairs);
+                if (newUser == null)
+                {
+                    // no server connection
+                    return;
+                }
                 userId = newUser.getString("_id");
             }
             {
@@ -66,8 +95,7 @@ public class loginActivity extends ActionBarActivity {
             }
 
             Intent myIntent = new Intent(loginActivity.this, mainActivity.class);
-            myIntent.putExtra("name", username);
-            myIntent.putExtra("userID", userId);
+            myIntent.putExtra("userId", userId);
             loginActivity.this.startActivity(myIntent);
 
 //            runOnUiThread(new Runnable() {

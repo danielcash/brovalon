@@ -7,6 +7,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.json.JSONArray;
@@ -93,7 +94,44 @@ public class brotilities {
             HttpClient client = new DefaultHttpClient();
             HttpPost request = new HttpPost();
             request.setURI(new URI(requestURL));
-            request.setEntity(new UrlEncodedFormEntity(searchTerms));
+            if (searchTerms != null) {
+                request.setEntity(new UrlEncodedFormEntity(searchTerms));
+            }
+            response = client.execute(request);
+
+            // create JSON object from content
+            JSONObject jsonObj = new JSONObject(brotilities.convertStreamToString(response.getEntity().getContent()));
+            return jsonObj;
+
+        } catch (MalformedURLException e) {
+            // URL is invalid
+            Log.w("test", e.getMessage());
+        } catch (SocketTimeoutException e) {
+            // data retrieval or connection timed out
+            Log.w("test", e.getMessage());
+        } catch (java.io.IOException e) {
+            // could not read response body
+            // (could not create input stream)
+            Log.w("test", e.getMessage());
+        } catch (JSONException e) {
+            // response body is no valid JSON string
+            Log.w("test", e.getMessage());
+        } catch (Exception e) {
+            // other
+            Log.w("test", e.getMessage());
+        }
+
+        return null;
+    }
+
+    public static JSONObject getWebRequestOneById(String requestURL)
+    {
+        HttpResponse response = null;
+        try {
+            // create connection
+            HttpClient client = new DefaultHttpClient();
+            HttpGet request = new HttpGet();
+            request.setURI(new URI(requestURL));
             response = client.execute(request);
 
             // create JSON object from content
@@ -128,6 +166,42 @@ public class brotilities {
             // create connection
             HttpClient client = new DefaultHttpClient();
             HttpPost request = new HttpPost();
+            request.setURI(new URI(requestURL));
+            request.setEntity(new UrlEncodedFormEntity(data));
+            response = client.execute(request);
+
+            // create JSON object from content
+            JSONObject jsonObj = new JSONObject(brotilities.convertStreamToString(response.getEntity().getContent()));
+            return jsonObj;
+
+        } catch (MalformedURLException e) {
+            // URL is invalid
+            Log.w("test", e.getMessage());
+        } catch (SocketTimeoutException e) {
+            // data retrieval or connection timed out
+            Log.w("test", e.getMessage());
+        } catch (java.io.IOException e) {
+            // could not read response body
+            // (could not create input stream)
+            Log.w("test", e.getMessage());
+        } catch (JSONException e) {
+            // response body is no valid JSON string
+            Log.w("test", e.getMessage());
+        } catch (Exception e) {
+            // other
+            Log.w("test", e.getMessage());
+        }
+
+        return null;
+    }
+
+    public static JSONObject putWebRequest(String requestURL, List<NameValuePair> data)
+    {
+        HttpResponse response = null;
+        try {
+            // create connection
+            HttpClient client = new DefaultHttpClient();
+            HttpPut request = new HttpPut();
             request.setURI(new URI(requestURL));
             request.setEntity(new UrlEncodedFormEntity(data));
             response = client.execute(request);
