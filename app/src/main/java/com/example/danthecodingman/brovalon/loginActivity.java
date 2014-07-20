@@ -1,6 +1,9 @@
 package com.example.danthecodingman.brovalon;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
@@ -72,9 +75,9 @@ public class loginActivity extends ActionBarActivity {
         // look up user in database
         ArrayList<NameValuePair> searchTerms = new ArrayList<NameValuePair>(1);
         searchTerms.add(new BasicNameValuePair("name", username));
-        JSONObject user = brotilities.getWebRequestOne("http://danthecodingman.com:3000/users/", searchTerms);
 
         try {
+            JSONObject user = brotilities.getWebRequestOne("http://danthecodingman.com:3000/users/", searchTerms);
             if (user == null)
             {
                 // no user found in database already, so we need to create one
@@ -89,6 +92,7 @@ public class loginActivity extends ActionBarActivity {
                 }
                 userId = newUser.getString("_id");
             }
+            else
             {
                 // user was found in database, so just load their info
                 userId = user.getString("_id");
@@ -96,17 +100,33 @@ public class loginActivity extends ActionBarActivity {
 
             Intent myIntent = new Intent(loginActivity.this, mainActivity.class);
             myIntent.putExtra("userId", userId);
+            myIntent.putExtra("name", username);
             loginActivity.this.startActivity(myIntent);
             this.finish();
 
-//            runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                }
-//            });
-        } catch (JSONException e) {
+        } catch (Exception e) {
             // handle exception
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    showLoginAlert();
+                }
+            });
         }
+    }
+
+    public void showLoginAlert()
+    {
+        new AlertDialog.Builder(this)
+                .setTitle("Login Error")
+                .setMessage("The Brovalon server could not be contacted. Try again later.")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // things
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
     public void loginUser(View view)

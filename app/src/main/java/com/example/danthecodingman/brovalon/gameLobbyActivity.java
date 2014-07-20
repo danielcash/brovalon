@@ -1,6 +1,7 @@
 package com.example.danthecodingman.brovalon;
 
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.SystemClock;
 import android.support.v7.app.ActionBarActivity;
@@ -14,6 +15,8 @@ import android.widget.TextView;
 
 import com.example.danthecodingman.brovalon.R;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,11 +36,18 @@ public class gameLobbyActivity extends Activity {
     ArrayAdapter<userInfo> adapter;
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onBackPressed() {
+        //super.onStop();
         cancelThread = true;
+        new userDisconnect().execute();
         Log.w("test", "Activity stopped!");
         this.finish();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        //super.onConfigurationChanged(newConfig);
+        // This overrides default action
     }
 
     @Override
@@ -56,6 +66,7 @@ public class gameLobbyActivity extends Activity {
         Bundle extras = getIntent().getExtras();
         currentUser.id = (String) extras.get("userId");
         currentUser.gameId = (String) extras.get("gameId");
+        currentUser.name = (String) extras.get("name");
         gameTitle = (TextView)findViewById(R.id.gameTitle);
 
         pollserv = new pollServer();
@@ -72,24 +83,53 @@ public class gameLobbyActivity extends Activity {
         }
     }
 
+    private class userDisconnect extends AsyncTask {
+
+        @Override
+        protected Object doInBackground(Object... arg0)
+        {
+            disconnectUser();
+            return null;
+        }
+    }
+
+    public void disconnectUser()
+    {
+        ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+        nameValuePairs.add(new BasicNameValuePair("name", currentUser.name));
+
+        JSONObject response = brotilities.putWebRequest("http://danthecodingman.com:3000/users/" + currentUser.id, nameValuePairs);
+        if (response == null)
+        {
+            // error
+            Log.w("test", "failed to put request");
+        }
+    }
+
     public void updateGameInfo()
     {
         while (!cancelThread) {
-            JSONObject gameInfoObj = brotilities.getWebRequestOneById("http://danthecodingman.com:3000/games/" + currentUser.gameId);
+            try {
+                JSONObject gameInfoObj = brotilities.getWebRequestOneById("http://danthecodingman.com:3000/games/" + currentUser.gameId);
 
-            if (gameInfoObj != null) {
-                try {
-                    gameName = new String(gameInfoObj.getString("name"));
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            gameTitle.setText(gameName);
-                        }
-                    });
+                if (gameInfoObj != null) {
+                    try {
+                        gameName = new String(gameInfoObj.getString("name"));
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                gameTitle.setText(gameName);
+                            }
+                        });
 
-                } catch (JSONException e) {
-                    // handle exception
+                    } catch (JSONException e) {
+                        // handle exception
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+
             }
 
             JSONArray userInfoObj = brotilities.getWebRequestArray("http://danthecodingman.com:3000/games/users/" + currentUser.gameId);

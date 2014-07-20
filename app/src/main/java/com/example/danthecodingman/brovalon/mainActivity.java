@@ -72,6 +72,7 @@ public class mainActivity extends Activity {
                 Intent myIntent = new Intent(mainActivity.this, gameLobbyActivity.class);
                 myIntent.putExtra("userId", currentUser.id);
                 myIntent.putExtra("gameId", currentUser.gameId);
+                myIntent.putExtra("name", currentUser.name);
                 mainActivity.this.startActivity(myIntent);
             }
         });
@@ -83,6 +84,7 @@ public class mainActivity extends Activity {
 
         currentUser = new userInfo();
         currentUser.id = userId;
+        currentUser.name = (String) extras.get("name");
         new getUserInfo().execute();
     }
 
@@ -118,18 +120,26 @@ public class mainActivity extends Activity {
 
     public void grabUserInfo()
     {
-        JSONObject user = brotilities.getWebRequestOneById("http://danthecodingman.com:3000/users/" + userId);
-        if (user != null)
-        {
-            try {
-                currentUser.name = user.getString("name");
-                currentUser.gameId = user.getString("gameId");
-            }
-            catch (Exception e)
+        try {
+            JSONObject user = brotilities.getWebRequestOneById("http://danthecodingman.com:3000/users/" + userId);
+
+            if (user != null)
             {
-                Log.w("test", e.getMessage());
+                try {
+                    currentUser.name = user.getString("name");
+                    currentUser.gameId = user.getString("gameId");
+                }
+                catch (Exception e)
+                {
+                    Log.w("test", e.getMessage());
+                }
             }
         }
+        catch (Exception e)
+        {
+
+        }
+
     }
 
     public void updateUserInfo()

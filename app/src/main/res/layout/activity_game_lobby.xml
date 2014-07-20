@@ -40,8 +40,8 @@
         android:layout_height="wrap_content"
         android:text="Ready"
         android:id="@+id/checkReady"
-        android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/gameTitle"
-        android:checked="false" />
+        android:checked="false"
+        android:layout_below="@+id/listView"
+        android:layout_alignLeft="@+id/listView" />
 
 </RelativeLayout>
