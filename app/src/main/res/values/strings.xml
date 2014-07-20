@@ -9,5 +9,7 @@
     <string name="title_activity_login">Brovalon</string>
     <string name="login">Enter Brovalon username.</string>
     <string name="title_activity_game_lobby">Brovalon: Game Lobby</string>
+    <string name="title_activity_game">gameActivity</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>

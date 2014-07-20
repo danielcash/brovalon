@@ -97,6 +97,7 @@ public class loginActivity extends ActionBarActivity {
             Intent myIntent = new Intent(loginActivity.this, mainActivity.class);
             myIntent.putExtra("userId", userId);
             loginActivity.this.startActivity(myIntent);
+            this.finish();
 
 //            runOnUiThread(new Runnable() {
 //                @Override

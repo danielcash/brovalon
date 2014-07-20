@@ -38,6 +38,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.danthecodingman.brovalon.mainActivity" />
         </activity>
+        <activity
+            android:name=".gameActivity"
+            android:label="@string/title_activity_game" >
+        </activity>
     </application>
 
 </manifest>

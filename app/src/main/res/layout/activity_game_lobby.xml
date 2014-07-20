@@ -15,4 +15,33 @@
         android:layout_height="wrap_content"
         android:id="@+id/gameTitle"/>
 
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/listView"
+        android:layout_below="@+id/gameTitle"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="67dp"
+        android:background="@drawable/border_ui"
+        android:layout_above="@+id/buttonPlay" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Play!"
+        android:id="@+id/buttonPlay"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ready"
+        android:id="@+id/checkReady"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/gameTitle"
+        android:checked="false" />
+
 </RelativeLayout>

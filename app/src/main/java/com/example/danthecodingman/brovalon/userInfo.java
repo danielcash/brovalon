@@ -8,4 +8,12 @@ public class userInfo {
     public String name;
 
     public String gameId;
+
+    public boolean ready;
+
+    @Override
+    public String toString()
+    {
+        return name;
+    }
 }
