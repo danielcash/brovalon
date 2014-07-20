@@ -98,7 +98,7 @@ public class gameLobbyActivity extends Activity {
         ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
         nameValuePairs.add(new BasicNameValuePair("name", currentUser.name));
 
-        JSONObject response = brotilities.putWebRequest("http://danthecodingman.com:3000/users/" + currentUser.id, nameValuePairs);
+        JSONObject response = brotilities.putWebRequest(brotilities.brovalonServer + "/users/" + currentUser.id, nameValuePairs);
         if (response == null)
         {
             // error
@@ -110,7 +110,7 @@ public class gameLobbyActivity extends Activity {
     {
         while (!cancelThread) {
             try {
-                JSONObject gameInfoObj = brotilities.getWebRequestOneById("http://danthecodingman.com:3000/games/" + currentUser.gameId);
+                JSONObject gameInfoObj = brotilities.getWebRequestOneById(brotilities.brovalonServer + "/games/" + currentUser.gameId);
 
                 if (gameInfoObj != null) {
                     try {
@@ -132,7 +132,7 @@ public class gameLobbyActivity extends Activity {
 
             }
 
-            JSONArray userInfoObj = brotilities.getWebRequestArray("http://danthecodingman.com:3000/games/users/" + currentUser.gameId);
+            JSONArray userInfoObj = brotilities.getWebRequestArray(brotilities.brovalonServer + "/games/users/" + currentUser.gameId);
 
             if (userInfoObj != null)
             {

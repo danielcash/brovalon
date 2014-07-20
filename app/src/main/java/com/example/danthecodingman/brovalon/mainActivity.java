@@ -121,7 +121,7 @@ public class mainActivity extends Activity {
     public void grabUserInfo()
     {
         try {
-            JSONObject user = brotilities.getWebRequestOneById("http://danthecodingman.com:3000/users/" + userId);
+            JSONObject user = brotilities.getWebRequestOneById(brotilities.brovalonServer + "/users/" + userId);
 
             if (user != null)
             {
@@ -148,7 +148,7 @@ public class mainActivity extends Activity {
         nameValuePairs.add(new BasicNameValuePair("name", currentUser.name));
         nameValuePairs.add(new BasicNameValuePair("gameId", currentUser.gameId));
 
-        JSONObject response = brotilities.putWebRequest("http://danthecodingman.com:3000/users/" + userId, nameValuePairs);
+        JSONObject response = brotilities.putWebRequest(brotilities.brovalonServer + "/users/" + userId, nameValuePairs);
         if (response == null)
         {
             // error
@@ -158,7 +158,7 @@ public class mainActivity extends Activity {
 
     public void updateGameList()
     {
-        JSONArray games = brotilities.getWebRequestArray("http://danthecodingman.com:3000/games");
+        JSONArray games = brotilities.getWebRequestArray(brotilities.brovalonServer + "/games");
 
         if (games != null) {
             try {

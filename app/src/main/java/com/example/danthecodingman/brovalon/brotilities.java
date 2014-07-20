@@ -30,6 +30,8 @@ import java.util.*;
  * Created by Daniel on 7/19/2014.
  */
 public class brotilities {
+    public static String brovalonServer = "http://192.168.0.101:3000";
+
     public static String convertStreamToString(InputStream inputStream) throws IOException {
         if (inputStream != null) {
             Writer writer = new StringWriter();

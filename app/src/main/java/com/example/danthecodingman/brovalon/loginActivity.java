@@ -77,14 +77,14 @@ public class loginActivity extends ActionBarActivity {
         searchTerms.add(new BasicNameValuePair("name", username));
 
         try {
-            JSONObject user = brotilities.getWebRequestOne("http://danthecodingman.com:3000/users/", searchTerms);
+            JSONObject user = brotilities.getWebRequestOne(brotilities.brovalonServer + "/users/", searchTerms);
             if (user == null)
             {
                 // no user found in database already, so we need to create one
                 ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
                 nameValuePairs.add(new BasicNameValuePair("name", username));
 
-                JSONObject newUser = brotilities.postWebRequest("http://danthecodingman.com:3000/users/", nameValuePairs);
+                JSONObject newUser = brotilities.postWebRequest(brotilities.brovalonServer + "/users/", nameValuePairs);
                 if (newUser == null)
                 {
                     // no server connection
