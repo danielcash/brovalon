@@ -192,7 +192,9 @@ public class mainActivity extends Activity {
     public void createGame(View view)
     {
         Intent myIntent = new Intent(mainActivity.this, createGameActivity.class);
-        //myIntent.putExtra();
+        myIntent.putExtra("userId", currentUser.id);
+        myIntent.putExtra("gameId", currentUser.gameId);
+        myIntent.putExtra("name", currentUser.name);
         mainActivity.this.startActivity(myIntent);
     }
 }

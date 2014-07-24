@@ -25,6 +25,7 @@ import java.util.ArrayList;
 
 public class gameLobbyActivity extends Activity {
 
+    final int SLEEP_TIME = 1000;
     TextView gameTitle;
     ListView playersList;
     userInfo currentUser;
@@ -160,7 +161,7 @@ public class gameLobbyActivity extends Activity {
                 }
             }
 
-            SystemClock.sleep(5000);
+            SystemClock.sleep(SLEEP_TIME);
         }
     }
 
