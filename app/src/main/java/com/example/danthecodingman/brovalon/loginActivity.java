@@ -25,6 +25,7 @@ import org.json.*;
 public class loginActivity extends ActionBarActivity {
 
     EditText mEdit;
+    userInfo currentUser = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +100,7 @@ public class loginActivity extends ActionBarActivity {
             }
 
             Intent myIntent = new Intent(loginActivity.this, mainActivity.class);
+            
             myIntent.putExtra("userId", userId);
             myIntent.putExtra("name", username);
             loginActivity.this.startActivity(myIntent);

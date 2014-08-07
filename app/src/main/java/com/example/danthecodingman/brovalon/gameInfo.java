@@ -9,18 +9,17 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 /**
- * Created by Daniel on 7/19/2014.
+ * Created by Daniel on 8/2/2014.
  */
-public class userInfo {
+public class gameInfo {
     public String id;
     public String name;
 
-    public String gameId;
-    public boolean ready;
+    public String hostId;
+    public int maxPlayers;
+    public int currentPlayers;
 
-    public userInfo() {}
-
-    public userInfo(JSONObject obj)
+    public gameInfo(JSONObject obj)
     {
         parseJSON(obj);
     }
@@ -30,21 +29,22 @@ public class userInfo {
         try {
             id = new String(obj.getString("_id"));
             name = new String(obj.getString("name"));
-            gameId = new String(obj.getString("gameId"));
-            ready = new Boolean(obj.getBoolean("ready"));
+            maxPlayers = new Integer(obj.getInt("maxplayers"));
+            currentPlayers = new Integer(obj.getInt("currentplayers"));
+            hostId = new String(obj.getString("hostId"));
         } catch (JSONException e){
             // handle exception
         }
     }
 
-    public static String serializeObject(userInfo ui)
+    public static String serializeObject(gameInfo gi)
     {
         String serializedObj = null;
 
         try {
             ByteArrayOutputStream bo = new ByteArrayOutputStream();
             ObjectOutputStream so = new ObjectOutputStream(bo);
-            so.writeObject(ui);
+            so.writeObject(gi);
             so.flush();
             serializedObj = bo.toString();
         } catch (Exception e) {
@@ -54,15 +54,15 @@ public class userInfo {
         return serializedObj;
     }
 
-    public static userInfo deserializeObject(String ui)
+    public static gameInfo deserializeObject(String gi)
     {
-        userInfo tmp = null;
+        gameInfo tmp = null;
 
         try {
-            byte b[] = ui.getBytes();
+            byte b[] = gi.getBytes();
             ByteArrayInputStream bi = new ByteArrayInputStream(b);
             ObjectInputStream si = new ObjectInputStream(bi);
-            tmp = (userInfo) si.readObject();
+            tmp = (gameInfo) si.readObject();
         } catch (Exception e) {
             // handle exception
         }

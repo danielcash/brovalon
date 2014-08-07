@@ -1,6 +1,7 @@
 package com.example.danthecodingman.brovalon;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.SystemClock;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -28,10 +30,17 @@ public class gameLobbyActivity extends Activity {
     final int SLEEP_TIME = 1000;
     TextView gameTitle;
     ListView playersList;
-    userInfo currentUser;
+
     String gameName;
     AsyncTask pollserv;
     boolean cancelThread = false;
+
+    int maxPlayers = 5;
+    int currentPlayers = 0;
+    String hostId;
+
+    userInfo user;
+    gameInfo game;
 
     ArrayList<userInfo> usersInfo = new ArrayList<userInfo>();
     ArrayAdapter<userInfo> adapter;
@@ -63,11 +72,11 @@ public class gameLobbyActivity extends Activity {
         playersList = (ListView)findViewById(R.id.listView);
         playersList.setAdapter(adapter);
 
-        currentUser = new userInfo();
+        user = new userInfo();
         Bundle extras = getIntent().getExtras();
-        currentUser.id = (String) extras.get("userId");
-        currentUser.gameId = (String) extras.get("gameId");
-        currentUser.name = (String) extras.get("name");
+        user.id = (String) extras.get("userId");
+        user.gameId = (String) extras.get("gameId");
+        user.name = (String) extras.get("name");
         gameTitle = (TextView)findViewById(R.id.gameTitle);
 
         pollserv = new pollServer();
@@ -97,12 +106,20 @@ public class gameLobbyActivity extends Activity {
     public void disconnectUser()
     {
         ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-        nameValuePairs.add(new BasicNameValuePair("name", currentUser.name));
+        nameValuePairs.add(new BasicNameValuePair("name", user.name));
 
-        JSONObject response = brotilities.putWebRequest(brotilities.brovalonServer + "/users/" + currentUser.id, nameValuePairs);
+        JSONObject response = brotilities.putWebRequest(brotilities.brovalonServer + "/users/" + user.id, nameValuePairs);
         if (response == null)
         {
             // error
+            Log.w("test", "failed to put request");
+        }
+
+        nameValuePairs = new ArrayList<NameValuePair>(1);
+        nameValuePairs.add(new BasicNameValuePair("amount", "-1"));
+        response = brotilities.postWebRequest(brotilities.brovalonServer + "/games/count/" + user.gameId, nameValuePairs);
+        if (response == null)
+        {
             Log.w("test", "failed to put request");
         }
     }
@@ -111,21 +128,16 @@ public class gameLobbyActivity extends Activity {
     {
         while (!cancelThread) {
             try {
-                JSONObject gameInfoObj = brotilities.getWebRequestOneById(brotilities.brovalonServer + "/games/" + currentUser.gameId);
+                JSONObject gameInfoObj = brotilities.getWebRequestOneById(brotilities.brovalonServer + "/games/" + user.gameId);
 
                 if (gameInfoObj != null) {
-                    try {
-                        gameName = new String(gameInfoObj.getString("name"));
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                gameTitle.setText(gameName);
-                            }
-                        });
-
-                    } catch (JSONException e) {
-                        // handle exception
-                    }
+                    game.parseJSON(gameInfoObj);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            gameTitle.setText(game.name);
+                        }
+                    });
                 }
             }
             catch (Exception e)
@@ -133,7 +145,7 @@ public class gameLobbyActivity extends Activity {
 
             }
 
-            JSONArray userInfoObj = brotilities.getWebRequestArray(brotilities.brovalonServer + "/games/users/" + currentUser.gameId);
+            JSONArray userInfoObj = brotilities.getWebRequestArray(brotilities.brovalonServer + "/games/users/" + user.gameId);
 
             if (userInfoObj != null)
             {
@@ -141,10 +153,7 @@ public class gameLobbyActivity extends Activity {
                     usersInfo.clear();
                     for (int i = 0; i < userInfoObj.length(); i++) {
                         JSONObject obj = userInfoObj.getJSONObject(i);
-                        userInfo tmpUser = new userInfo();
-                        tmpUser.id = obj.getString("_id");
-                        tmpUser.name = obj.getString("name");
-                        //tmpUser.ready = obj.getBoolean("ready");
+                        userInfo tmpUser = new userInfo(obj);
                         usersInfo.add(tmpUser);
                     }
 
@@ -162,6 +171,18 @@ public class gameLobbyActivity extends Activity {
             }
 
             SystemClock.sleep(SLEEP_TIME);
+        }
+    }
+
+    public void playGame(View view)
+    {
+        if (game.currentPlayers == game.maxPlayers && user.id.equals(game.hostId))
+        {
+            Intent myIntent = new Intent(gameLobbyActivity.this, gameActivity.class);
+            myIntent.putExtra("userId", user.id);
+            myIntent.putExtra("name", user.name);
+            gameLobbyActivity.this.startActivity(myIntent);
+            this.finish();
         }
     }
 

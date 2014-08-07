@@ -39,10 +39,12 @@ public class mainActivity extends Activity {
     {
         String id;
         String name;
+        int maxPlayers;
+        int currentPlayers;
 
         @Override
         public String toString(){
-            return name;
+            return String.format("%s (%d/%d)", name, currentPlayers, maxPlayers);
         }
     }
 
@@ -154,6 +156,15 @@ public class mainActivity extends Activity {
             // error
             Log.w("test", "failed to put request");
         }
+
+        nameValuePairs = new ArrayList<NameValuePair>(1);
+        nameValuePairs.add(new BasicNameValuePair("amount", "1"));
+        response = brotilities.postWebRequest(brotilities.brovalonServer + "/games/count/" + currentUser.gameId, nameValuePairs);
+        if (response == null)
+        {
+            Log.w("test", "failed to put request");
+        }
+
     }
 
     public void updateGameList()
@@ -168,6 +179,8 @@ public class mainActivity extends Activity {
                     gameListItem gli = new gameListItem();
                     gli.id = obj.getString("_id");
                     gli.name = obj.getString("name");
+                    gli.maxPlayers = obj.getInt("maxplayers");
+                    gli.currentPlayers = obj.getInt("currentplayers");
                     gameStrs.add(gli);
                 }
 

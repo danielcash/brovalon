@@ -110,9 +110,10 @@ public class createGameActivity extends ActionBarActivity {
 
         try
         {
-            ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+            ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(3);
             nameValuePairs.add(new BasicNameValuePair("name", gameName));
             nameValuePairs.add(new BasicNameValuePair("maxplayers", (new Integer(maxPlayers).toString())));
+            nameValuePairs.add(new BasicNameValuePair("currentplayers", Integer.toString(1)));
 
             JSONObject response = brotilities.postWebRequest(brotilities.brovalonServer + "/games/", nameValuePairs);
             if (response == null)
